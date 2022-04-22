@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.goalsRoutes = void 0;
+const express_1 = require("express");
+const ensureAuthenticate_1 = require("../middlewares/ensureAuthenticate");
+const index_1 = require("./../controllers/Goals/CreateGoalsController/index");
+const GetGoalsByIdController_1 = require("../controllers/Goals/GetGoalsByIdController");
+const index_2 = require("./../controllers/Goals/UpdateGoalsByIdController/index");
+const index_3 = require("./../controllers/Goals/DeleteGoalsByIdController/index");
+const goalsRoutes = (0, express_1.Router)();
+exports.goalsRoutes = goalsRoutes;
+goalsRoutes.post('/create', ensureAuthenticate_1.ensureAuthenticate, new index_1.CreateGoalsController().handle);
+goalsRoutes.get('/get/:goalsId', ensureAuthenticate_1.ensureAuthenticate, new GetGoalsByIdController_1.GetGoalsByIdController().handle);
+goalsRoutes.put('/update/:goalsId', ensureAuthenticate_1.ensureAuthenticate, new index_2.UpdateGoalsByIdController().handle);
+goalsRoutes.delete('/delete/:goalsId', ensureAuthenticate_1.ensureAuthenticate, new index_3.DeleteGoalsByIdController().handle);

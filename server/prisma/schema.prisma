@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @unique @default(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  isActive      Boolean        @default(false)
+  userPlan      Plans          @default(GRATIS)
+  refresh_token RefreshToken?
+  Wallet        Wallet[]
+  expendidures  Expenditures[]
+  receipts      Receipts[]
+  goals         Goals[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now())
+
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String @id @unique @default(uuid())
+  expiresIn Int
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String @unique
+
+  @@map("refresh_token")
+}
+
+enum Plans {
+  GRATIS
+  PRO
+}
+
+model Wallet {
+  id           String         @id @unique @default(uuid())
+  user         User           @relation(fields: [userId], references: [id])
+  userId       String
+  expenditures Expenditures[]
+  receipts     Receipts[]
+  name         String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now())
+
+  @@map("wallets")
+}
+
+model Expenditures {
+  id               String   @id @unique @default(uuid())
+  user             User     @relation(fields: [userId], references: [id])
+  userId           String
+  wallets          Wallet   @relation(fields: [walletsId], references: [id])
+  walletsId        String
+  name             String   @unique
+  category         String
+  typeExpenditure  String
+  expenditureValue String
+  parcels          Int      @default(0)
+  isClosed         Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
+
+  @@map("expenditures")
+}
+
+model Receipts {
+  id           String   @id @unique @default(uuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  wallets      Wallet   @relation(fields: [walletsId], references: [id])
+  walletsId    String
+  name         String   @unique
+  category     String
+  typeReceipt  String
+  receiptValue String
+  parcels      Int      @default(0)
+  isClosed     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+
+  @@map("receipts")
+}
+
+model Goals {
+  id                 String   @id @unique @default(uuid())
+  user               User     @relation(fields: [userId], references: [id])
+  userId             String   @unique
+  maxExpenditure     String   @default("0")
+  minReceipt         String   @default("0")
+  currentExpenditure String   @default("0")
+  currentReceipt     String   @default("0")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now())
+
+  @@map("goals")
+}

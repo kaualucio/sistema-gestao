@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.walletRoutes = void 0;
+const express_1 = require("express");
+const ensureAuthenticate_1 = require("../middlewares/ensureAuthenticate");
+const index_1 = require("./../controllers/Wallets/CreateWalletController/index");
+const GetAllWalletsUserController_1 = require("../controllers/Wallets/GetAllWalletsUserController");
+const GetWalletByIdController_1 = require("../controllers/Wallets/GetWalletByIdController");
+const index_2 = require("./../controllers/Wallets/UpdateWalletsByIdController/index");
+const DeleteWalletByIdController_1 = require("../controllers/Wallets/DeleteWalletByIdController");
+const walletRoutes = (0, express_1.Router)();
+exports.walletRoutes = walletRoutes;
+walletRoutes.post('/create', ensureAuthenticate_1.ensureAuthenticate, new index_1.CreateWalletController().handle);
+walletRoutes.get('/get-one/:walletId', ensureAuthenticate_1.ensureAuthenticate, new GetWalletByIdController_1.GetWalletByIdController().handle);
+walletRoutes.get('/get-all/:userId', ensureAuthenticate_1.ensureAuthenticate, new GetAllWalletsUserController_1.GetAllWalletsUserController().handle);
+walletRoutes.put('/update/:walletId', ensureAuthenticate_1.ensureAuthenticate, new index_2.UpdateWalletsByIdController().handle);
+walletRoutes.delete('/delete/:walletId', ensureAuthenticate_1.ensureAuthenticate, new DeleteWalletByIdController_1.DeleteWalletByIdController().handle);
